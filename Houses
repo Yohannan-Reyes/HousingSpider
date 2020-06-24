@@ -1,3 +1,17 @@
+# -*- coding: utf-8 -*-
+"""
+Created on Thu Aug 30 20:54:03 2018
+
+@author: Yohan Reyes
+"""
+
+# =============================================================================
+# %% Settings
+# =============================================================================
+
+scrape_ = 'PCH'
+
+###############################################################################
 #%% Libs
 ###############################################################################
 
@@ -86,7 +100,7 @@ def parserPage(soup, pr, no_pr):
         desc_more = temp.find(class_="expanded-description")
         if desc_more !=None:
             desc_more = desc_more.get_text()
-            desc_more = list(desc_more)[0]
+            desc_more = list(desc_more)
         offer_temp.append(desc_more)
         
         link = temp.find(class_="href-link tile-title-text")
@@ -105,7 +119,10 @@ def parserPage(soup, pr, no_pr):
             price = price.replace(' ', '')
             price = price.replace(',', '')
             price = price.replace('\n', '')
-            price = float(price)
+            try:
+                price = float(price)
+            except:
+                price = None
             # pr.append(price)
             offer_temp.append(price)
             
@@ -150,19 +167,16 @@ def linksParser(link_temp):
 downloads_path = "D:\\Spiders\\Download"
 os.chdir(downloads_path)
 
-
-url0 = "https://www.vivanuncios.com.mx/s-renta-inmuebles/pachuca-de-soto/v1c1098l10488p1"
-url = "https://www.vivanuncios.com.mx/s-renta-inmuebles/pachuca-de-soto/v1c1098l10488p"
-'''
-url1 = "https://www.inmuebles24.com/casas-en-renta-en-pachuca.html"
-url2 = "https://casas.trovit.com.mx/renta-casa-pachuca-soto"
-url3 = "https://www.segundamano.mx/anuncios/hidalgo/pachuca-de-soto/renta-inmuebles"
-url4 = 'https://facebook.com/login'
-'''
-'''
-url0 = 'https://www.vivanuncios.com.mx/s-renta-inmuebles/guadalajara-y-zona-metro/v1c1098l10567p1'
-url = 'https://www.vivanuncios.com.mx/s-renta-inmuebles/guadalajara-y-zona-metro/v1c1098l10567p'
-'''
+if scrape_ == 'PCH':
+    url0 = "https://www.vivanuncios.com.mx/s-renta-inmuebles/pachuca-de-soto/v1c1098l10488p1"
+    url = "https://www.vivanuncios.com.mx/s-renta-inmuebles/pachuca-de-soto/v1c1098l10488p"
+#    url1 = "https://www.inmuebles24.com/casas-en-renta-en-pachuca.html"
+#    url2 = "https://casas.trovit.com.mx/renta-casa-pachuca-soto"
+#    url3 = "https://www.segundamano.mx/anuncios/hidalgo/pachuca-de-soto/renta-inmuebles"
+#    url4 = 'https://facebook.com/login'
+elif scrape_ == 'GDL':
+    url0 = 'https://www.vivanuncios.com.mx/s-renta-inmuebles/guadalajara-y-zona-metro/v1c1098l10567p1'
+    url = 'https://www.vivanuncios.com.mx/s-renta-inmuebles/guadalajara-y-zona-metro/v1c1098l10567p'
 
 page = downloadPage(downloads_path,url0,True)
 
@@ -222,7 +236,11 @@ pr__ = pr__.reset_index(drop = True)
 now = str(datetime.now())
 now = now[:-7]
 now = now.replace(':', '-')
-name = 'housesPCH' + now + '.csv'
+if scrape_ == 'PCH':
+    name = 'housesPCH' + now + '.csv'
+elif scrape_ == 'GDL':
+    name = 'housesGDL' + now + '.csv'
+
 pr__.to_csv(name, index = False)
 
 
